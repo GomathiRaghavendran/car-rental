@@ -31,7 +31,7 @@
 	</scm>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
         <hibernate.version>7.3.0.Final</hibernate.version>
         <spring.web.version>7.0.6</spring.web.version>
         <slf4j.version>2.0.12</slf4j.version>
@@ -122,7 +122,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
                 <configuration>
-                    <release>21</release>
+                    <release>17</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
