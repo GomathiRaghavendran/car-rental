@@ -1,6 +1,6 @@
 package edu.hyf.car_rental.DTO;
 
-public class CarDto {
+public class CarRequestDTO {
 
     private Long id;
     private String brand;
