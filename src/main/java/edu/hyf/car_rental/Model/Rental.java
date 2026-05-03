@@ -35,4 +35,5 @@ public class Rental {
     @JoinColumn(name = "car_id")
     private Car car;
 
+
 }

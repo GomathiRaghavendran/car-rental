@@ -36,9 +36,9 @@ public class Car {
 
     private String model;
 
-    @NotNull
-    @Column(nullable = false)
-    private Boolean isRented = false;
+    //@NotNull
+    //@Column(nullable = false)
+   // private Boolean isRented = false;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rental> rentalRecord = new ArrayList<>();

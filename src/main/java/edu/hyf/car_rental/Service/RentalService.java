@@ -8,6 +8,8 @@ import edu.hyf.car_rental.Model.Rental;
 
 import edu.hyf.car_rental.Repositories.CarRepository;
 import edu.hyf.car_rental.Repositories.RentalRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ public class RentalService {
     private final RentalRepository rentalRepo;
     private final CarRepository carRepo;
     private final RentalMapper mapper;
+
+
 
     /* GET ALL RENTALS */
 
@@ -59,24 +63,34 @@ public class RentalService {
 
     public RentalResponseDTO createRental(RentalRequestDTO dto) {
 
-        Car car = carRepo.findById(dto.getCarId())
-                .orElseThrow(() ->
-                        new RuntimeException("Car not found"));
-
-        if (car.getIsRented()) {
-            throw new RuntimeException("Car already rented");
+        if (dto.getStartDate().isAfter(dto.getReturnDate())) {
+            throw new RuntimeException("Invalid rental dates");
         }
 
-        Rental rental = mapper.toEntity(dto);
 
-        rental.setCar(car);
+        Car car = carRepo.findById(dto.getCarId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Car not found"));
 
-        car.setIsRented(true);
+            boolean hasConflict =
+                    rentalRepo.existsByCarIdAndStartDateLessThanEqualAndReturnDateGreaterThanEqual(
+                            car.getId(),
+                            dto.getReturnDate(),
+                            dto.getStartDate()
+                    );
 
-        Rental saved = rentalRepo.save(rental);
+            if (hasConflict) {
+                throw new RuntimeException("Car already rented for these dates");
+            }
 
-        return mapper.toResponseDTO(saved);
-    }
+            Rental rental = mapper.toEntity(dto);
+
+            rental.setCar(car);
+
+            Rental saved = rentalRepo.save(rental);
+
+            return mapper.toResponseDTO(saved);
+        }
 
     /* ACTIVATE RENTAL */
 
@@ -86,7 +100,7 @@ public class RentalService {
                 .orElseThrow(() ->
                         new RuntimeException("Rental not found"));
 
-        rental.getCar().setIsRented(true);
+        //rental.getCar().setIsRented(true);
 
         Rental updated = rentalRepo.save(rental);
 
@@ -101,7 +115,7 @@ public class RentalService {
                 .orElseThrow(() ->
                         new RuntimeException("Rental not found"));
 
-        rental.getCar().setIsRented(false);
+        //rental.getCar().setIsRented(false);
 
         Rental updated = rentalRepo.save(rental);
 
@@ -116,7 +130,7 @@ public class RentalService {
                 .orElseThrow(() ->
                         new RuntimeException("Rental not found"));
 
-        rental.getCar().setIsRented(false);
+        //rental.getCar().setIsRented(false);
 
         rentalRepo.delete(rental);
 
